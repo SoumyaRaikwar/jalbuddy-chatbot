@@ -1,0 +1,158 @@
+.quick-actions {
+  margin: 1rem 0;
+  animation: slideUp 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.quick-actions-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 1rem;
+  text-align: center;
+}
+
+.quick-actions-title {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.9);
+  margin-bottom: 0.3rem;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.quick-actions-subtitle {
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.7);
+  font-style: italic;
+}
+
+.quick-actions-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 0.8rem;
+  max-width: 100%;
+}
+
+.quick-action-chip {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem 0.8rem;
+  border: none;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+  box-shadow: 
+    0 4px 16px rgba(0, 0, 0, 0.1),
+    0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+.quick-action-chip::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: var(--chip-color);
+  opacity: 0;
+  transition: all 0.3s ease;
+  z-index: 0;
+}
+
+.quick-action-chip:hover {
+  transform: translateY(-2px) scale(1.02);
+  box-shadow: 
+    0 8px 24px rgba(0, 0, 0, 0.15),
+    0 4px 16px rgba(0, 0, 0, 0.1);
+}
+
+.quick-action-chip:hover::before {
+  opacity: 0.1;
+}
+
+.quick-action-chip:active {
+  transform: translateY(0) scale(0.98);
+}
+
+.chip-icon {
+  position: relative;
+  z-index: 1;
+  color: var(--chip-color);
+  margin-bottom: 0.5rem;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.8);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.quick-action-chip:hover .chip-icon {
+  color: var(--chip-color);
+  background: rgba(255, 255, 255, 1);
+  transform: scale(1.1);
+}
+
+.chip-label {
+  position: relative;
+  z-index: 1;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #2c3e50;
+  text-align: center;
+  transition: color 0.3s ease;
+  line-height: 1.2;
+}
+
+.quick-action-chip:hover .chip-label {
+  color: #1a252f;
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .quick-actions-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.6rem;
+  }
+  
+  .quick-action-chip {
+    padding: 0.8rem 0.6rem;
+  }
+  
+  .chip-icon {
+    width: 28px;
+    height: 28px;
+    margin-bottom: 0.4rem;
+  }
+  
+  .chip-label {
+    font-size: 0.8rem;
+  }
+  
+  .quick-actions-title {
+    font-size: 1rem;
+  }
+  
+  .quick-actions-subtitle {
+    font-size: 0.8rem;
+  }
+}
