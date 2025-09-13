@@ -134,6 +134,33 @@ export const demoIntents = {
       suggestion: 'श्रेणी मानदंड और शमन चेकलिस्ट दिखाएँ।'
     }
   },
+  irrigation: {
+    key: 'irrigation',
+    en: {
+      title: 'Irrigation Advisory',
+      userQuery: 'What is the irrigation schedule for wheat in Haryana?',
+      summary: 'Optimal irrigation: 4-5 times during crop cycle (Current: Pre-sowing)',
+      details: [
+        { label: 'Crop', value: 'Wheat (Rabi)' },
+        { label: 'Growth stage', value: 'Pre-sowing preparation' },
+        { label: 'Water requirement', value: '450-500 mm total' },
+        { label: 'Next irrigation', value: 'Crown root stage (21 DAS)' },
+      ],
+      suggestion: 'Monitor soil moisture at 15cm depth for optimal timing.'
+    },
+    hi: {
+      title: 'सिंचाई सलाह',
+      userQuery: 'हरियाणा में गेहूं के लिए सिंचाई कार्यक्रम क्या है?',
+      summary: 'इष्टतम सिंचाई: फसल चक्र में 4-5 बार (वर्तमान: बुआई पूर्व)',
+      details: [
+        { label: 'फसल', value: 'गेहूं (रबी)' },
+        { label: 'वृद्धि चरण', value: 'बुआई पूर्व तैयारी' },
+        { label: 'जल आवश्यकता', value: '450-500 मिमी कुल' },
+        { label: 'अगली सिंचाई', value: 'क्राउन रूट स्टेज (21 DAS)' },
+      ],
+      suggestion: 'इष्टतम समय के लिए 15 सेमी गहराई पर मिट्टी की नमी की निगरानी करें।'
+    }
+  },
   dwlr: {
     key: 'dwlr',
     en: {

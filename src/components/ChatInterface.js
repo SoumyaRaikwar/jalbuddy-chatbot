@@ -4,11 +4,16 @@ import MessageBubble from './MessageBubble';
 import LanguageToggle from './LanguageToggle';
 import TypingIndicator from './TypingIndicator';
 import QuickActions from './QuickActions';
+import LoadingSkeleton from './LoadingSkeleton';
+import JalBuddyLogo from './JalBuddyLogo';
 import { demoIntents } from '../utils/demoData';
 import './ChatInterface.css';
 
 const ChatInterface = () => {
-  const [messages, setMessages] = useState([]);
+  const [messages, setMessages] = useState(() => {
+    const storedMessages = localStorage.getItem('messages');
+    return storedMessages ? JSON.parse(storedMessages) : [];
+  });
   const [inputText, setInputText] = useState('');
   const [isListening, setIsListening] = useState(false);
   const [voiceEnabled, setVoiceEnabled] = useState(true);
@@ -16,6 +21,8 @@ const ChatInterface = () => {
   const [isTyping, setIsTyping] = useState(false);
   const [showWelcome, setShowWelcome] = useState(true);
   const [showQuickActions, setShowQuickActions] = useState(false);
+  const [error, setError] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
 
   const messagesEndRef = useRef(null);
   const recognitionRef = useRef(null);
@@ -27,6 +34,13 @@ const ChatInterface = () => {
   useEffect(() => {
     scrollToBottom();
   }, [messages]);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, 1500);
+    return () => clearTimeout(timer);
+  }, []);
 
   // Initialize welcome message
   useEffect(() => {
@@ -80,6 +94,10 @@ const ChatInterface = () => {
       };
     }
   }, [language]);
+
+  useEffect(() => {
+    localStorage.setItem('messages', JSON.stringify(messages));
+  }, [messages]);
 
   const handleSendMessage = () => {
     if (inputText.trim() === '' || isTyping) return;
@@ -232,15 +250,13 @@ const ChatInterface = () => {
   };
 
   return (
-    <div className="chat-interface">
-      <div className="chat-header">
+    <div className="chat-interface" role="main" aria-label="JalBuddy Chat Interface">
+      <div className="chat-header" role="banner">
         <div className="header-left">
+          <JalBuddyLogo />
           <h1>JalBuddy AI Assistant</h1>
           <span className="subtitle">
             {language === 'hi' ? 'केंद्रीय भूजल बोर्ड | भारत सरकार' : 'Central Ground Water Board | Government of India'}
-          </span>
-          <span className="government-badge">
-            {language === 'hi' ? 'आधिकारिक' : 'OFFICIAL'}
           </span>
         </div>
         <div className="header-right">
@@ -248,6 +264,8 @@ const ChatInterface = () => {
             className={`voice-toggle ${voiceEnabled ? 'enabled' : ''}`}
             onClick={() => setVoiceEnabled(!voiceEnabled)}
             title={voiceEnabled ? 'Disable voice output' : 'Enable voice output'}
+            aria-label={voiceEnabled ? 'Disable voice output' : 'Enable voice output'}
+            aria-pressed={voiceEnabled}
           >
             {voiceEnabled ? <Volume2 size={16} /> : <VolumeX size={16} />}
           </button>
@@ -255,28 +273,39 @@ const ChatInterface = () => {
         </div>
       </div>
 
-      <div className="messages-container">
-        {showWelcome && (
-          <div className="welcome-animation">
-            <div className="welcome-pulse"></div>
-            <div className="welcome-text">Welcome to JalBuddy! 🌊</div>
-          </div>
+      <div className="messages-container" role="log" aria-live="polite" aria-label="Chat messages">
+        {isLoading ? (
+          <LoadingSkeleton />
+        ) : (
+          <>
+            {showWelcome && (
+              <div className="welcome-animation" role="status" aria-label="Welcome animation">
+                <div className="welcome-pulse"></div>
+                <div className="welcome-text">Welcome to JalBuddy! 🌊</div>
+              </div>
+            )}
+            {messages.map((message) => (
+              <MessageBubble key={message.id} message={message} />
+            ))}
+            {showQuickActions && (
+              <QuickActions 
+                language={language} 
+                onActionClick={handleQuickAction} 
+                isVisible={showQuickActions} 
+              />
+            )}
+            {isTyping && <TypingIndicator />}
+            {error && (
+              <div className="error-message" role="alert" aria-live="assertive">
+                {error}
+              </div>
+            )}
+            <div ref={messagesEndRef} />
+          </>
         )}
-        {messages.map((message) => (
-          <MessageBubble key={message.id} message={message} />
-        ))}
-        {showQuickActions && (
-          <QuickActions 
-            language={language} 
-            onActionClick={handleQuickAction} 
-            isVisible={showQuickActions} 
-          />
-        )}
-        {isTyping && <TypingIndicator />}
-        <div ref={messagesEndRef} />
       </div>
 
-      <div className="input-container">
+      <div className="input-container" role="region" aria-label="Message input">
         <div className="input-wrapper">
           <textarea
             value={inputText}
@@ -285,18 +314,28 @@ const ChatInterface = () => {
             placeholder={language === 'hi' ? 'यहाँ अपना प्रश्न लिखें...' : 'Type your groundwater query here...'}
             rows={1}
             className="message-input"
+            aria-label={language === 'hi' ? 'संदेश इनपुट' : 'Message input'}
+            aria-describedby="input-help"
           />
+          <div id="input-help" className="sr-only">
+            {language === 'hi' 
+              ? 'अपना भूजल प्रश्न टाइप करें और Enter दबाएं या Send बटन पर क्लिक करें'
+              : 'Type your groundwater question and press Enter or click Send button'
+            }
+          </div>
           <div className="input-actions">
             <div className="mic-container">
               <button
                 className={`mic-button ${isListening ? 'listening' : ''}`}
                 onClick={toggleListening}
                 title={isListening ? 'Stop recording' : 'Start voice input'}
+                aria-label={isListening ? 'Stop voice recording' : 'Start voice input'}
+                aria-pressed={isListening}
               >
                 {isListening ? <MicOff size={20} /> : <Mic size={20} />}
               </button>
               {isListening && (
-                <div className="voice-waveform">
+                <div className="voice-waveform" aria-hidden="true">
                   <div className="wave-bar"></div>
                   <div className="wave-bar"></div>
                   <div className="wave-bar"></div>
@@ -310,6 +349,7 @@ const ChatInterface = () => {
               onClick={handleSendMessage}
               disabled={inputText.trim() === '' || isTyping}
               title="Send message"
+              aria-label="Send message"
             >
               <Send size={20} />
             </button>

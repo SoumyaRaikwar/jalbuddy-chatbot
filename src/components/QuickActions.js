@@ -1,5 +1,5 @@
 import React from 'react';
-import { Droplets, CloudRain, MapPin, TestTube, FileText, Activity } from 'lucide-react';
+import { Droplets, CloudRain, MapPin, TestTube, FileText, Activity, Sprout } from 'lucide-react';
 import './QuickActions.css';
 
 const QuickActions = ({ language, onActionClick, isVisible }) => {
@@ -24,6 +24,13 @@ const QuickActions = ({ language, onActionClick, isVisible }) => {
       labelEn: 'Boring Location',
       labelHi: 'बोरिंग स्थान',
       color: '#e67e22'
+    },
+    {
+      key: 'irrigation',
+      icon: <Sprout size={18} />,
+      labelEn: 'Irrigation Advisory',
+      labelHi: 'सिंचाई सलाह',
+      color: '#f39c12'
     },
     {
       key: 'quality',
